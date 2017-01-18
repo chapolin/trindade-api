@@ -14,6 +14,7 @@ if(develop) {
 	STRING_CONNECTION = "mongodb://localhost/trindade";
 }
 
+
 // Connect to the DB
 MongoClient.connect(STRING_CONNECTION, function(err, db) {
 	if(!err) {
