@@ -28,5 +28,9 @@
         }
       });
       // Crud game insert: end
+      
+      app.post('/deja', function(request, response) {
+        response.json({msg: "Dejavú"});
+      });
     };
 })();
