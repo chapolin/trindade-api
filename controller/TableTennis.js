@@ -39,7 +39,7 @@
   
   TableTennisController.prototype.getAll = function(request, response) {
     this.repository.getAll(KEY_ALL_PLAYERS, function(players) {
-      response.json(players);
+      response.json({"players": players});
     });
   };
 })();

@@ -21,10 +21,7 @@
               game = new Game(winnerId, winner, loserId, loser);
           
           repository.insert(game, function(data) {
-            var players = {
-              "players": data
-            };
-            response.json(players);
+            response.json(data);
           });
         } else {
           response.json({error: "Invalid data!"});
