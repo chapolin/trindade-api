@@ -8,7 +8,7 @@
   
   var TableTennisRepository = exports.TableTennisRepository = function() {
     this.key = "player";
-    this.collecion = "players";
+    this.collecion = "player";
     this.ttl = 604800;
   };
   
@@ -19,10 +19,10 @@
         if(!error) {
           console.log("%s inserted!", self.getCollection());
         
-          var key = self.getKey() + self.getSeparator() + player.identifier + "_" + player.name;
+          var key = self.getKey() + self.getSeparator() + player.identifier;
           
           // Saving in redis
-          redis.put(key, movie);
+          redis.put(key, player);
         }
         
         callback(data);

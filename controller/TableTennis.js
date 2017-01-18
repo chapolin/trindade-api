@@ -18,14 +18,14 @@
       var identifier = request.body.identifier, 
           name = request.body.name,
           stars = request.body.stars,
-          player = new Player(identifier, name, stars);
+          player = new Player(identifier, name, stars), self = this;
 
       this.repository.checkIfExists(identifier, function(exists) {
-        this.repository.eraseAll(identifier);
-        this.repository.eraseAll(KEY_ALL_PLAYERS);
+        self.repository.eraseAll(identifier);
+        self.repository.eraseAll(KEY_ALL_PLAYERS);
         
         if(!exists) {
-          this.repository.insert(player, function(data) {
+          self.repository.insert(player, function(data) {
             response.json(data);
           });  
         } else {
