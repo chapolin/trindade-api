@@ -14,9 +14,11 @@
         if(Util.attrExists(request.body, "winner") && 
           Util.attrExists(request.body, "loser")) {
             
-          var winner = request.body.winner, 
+          var winnerId = request.body.winnerId,
+              winner = request.body.winner, 
+              loserId = request.body.loserId,
               loser = request.body.loser,
-              game = new Game(winner, loser);
+              game = new Game(winnerId, winner, loserId, loser);
           
           repository.insert(game, function(data) {
             response.json(data);
