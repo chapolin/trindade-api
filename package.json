@@ -1,0 +1,28 @@
+{
+  "name": "movies-services",
+  "version": "1.0.0",
+  "description": "Movies Services",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "cors": "^2.8.1",
+    "express": "^4.14.0",
+    "ioredis": "^2.3.0",
+    "method-override": "^2.3.6",
+    "mongodb": "^2.2.9",
+    "pm2": "^1.0.0",
+    "redis": "^2.6.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chapolin/movies-services.git"
+  },
+  "keywords": [
+    "services",
+    "movies"
+  ],
+  "license": "MIT"
+}
