@@ -18,10 +18,10 @@
     if(!Util.emptyObject(player) && Util.attrExists(player, "identifier")) {
       this.repository.checkIfExists(player.identifier, (exists) => {
         if(!exists) {
-          this.repository.eraseAll(player.identifier);
-          this.repository.eraseAll(KEY_ALL_SORTED_PLAYERS_BY_NAME_DESC);
-          
           this.repository.insert(player, (data) => {
+            this.repository.eraseAll(player.identifier);
+            this.repository.eraseAll(KEY_ALL_SORTED_PLAYERS_BY_NAME_DESC);
+            
             response.json(data);
           });  
         } else {

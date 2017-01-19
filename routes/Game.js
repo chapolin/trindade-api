@@ -18,5 +18,9 @@
     app.get('/games/last', (request, response) => {
       controller.getLastGames(request, response);
     });
+    
+    app.get('/games/grouped', (request, response) => {
+      controller.getGroupedData(request, response);
+    });
   };
 })();
