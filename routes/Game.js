@@ -4,9 +4,12 @@
   var Redis = require("../libs/RedisCache").RedisCache, redis = new Redis(), 
     GameRepository = require("../repository/Game").GameRepository, 
     repository = new GameRepository(),
-    TableTennisController = require("../controller/TableTennis").TableTennisController,
-    controller = new TableTennisController(), Util = require("../libs/Util").Util,
+    PlayerController = require("../controller/Player").PlayerController,
+    controller = new PlayerController(), Util = require("../libs/Util").Util,
     Game = require("../models/Game").Game;
+    
+    var GameController = require("../controller/Game").GameController,
+      controller = new GameController();
   
     module.exports = function (app) {
       // Crud game insert: start
@@ -18,7 +21,8 @@
               winner = request.body.winner, 
               loserId = request.body.loserId,
               loser = request.body.loser,
-              game = new Game(winnerId, winner, loserId, loser);
+              date = new Date(),
+              game = new Game(winnerId, winner, loserId, loser, date);
           
           repository.insert(game, function(data) {
             response.json(data);
@@ -29,8 +33,12 @@
       });
       // Crud game insert: end
       
-      app.post('/deja', function(request, response) {
-        response.json({msg: "Dejavú"});
+      app.get('/games', function(request, response) {
+        controller.getAll(request, response);
+      });
+      
+      app.get('/games/last', function(request, response) {
+        controller.getLastGames(request, response);
       });
     };
 })();

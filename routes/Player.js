@@ -1,16 +1,10 @@
 (function() {
   "use strict";
   
-  var TableTennisController = require("../controller/TableTennis").TableTennisController,
-    controller = new TableTennisController();
+  var PlayerController = require("../controller/Player").PlayerController,
+    controller = new PlayerController();
   
   module.exports = function (app) {
-    // Crud wins insert: start
-    app.post('/wins', function(request, response) {
-      // controller.saveOrRemove(request, response);
-    });
-    // Crud wins insert: end
-    
     // Crud wins insert: start
     app.post('/player', function(request, response) {
       controller.save(request, response);

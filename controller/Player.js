@@ -1,17 +1,17 @@
 (function() {
   "use strict";
   // Put in some constants file
-  const KEY_ALL_PLAYERS = "*";
+  const KEY_ALL_PLAYERS = "*", KEY_ALL_SORTED_PLAYERS_BY_NAME_DESC = "*_sorted_name_desc";
   
-  var TableTennisRepository = require("../repository/TableTennis").TableTennisRepository, 
+  var PlayerRepository = require("../repository/Player").PlayerRepository, 
       Util = require("../libs/Util").Util,
       Player = require("../models/Player").Player;
   
-  var TableTennisController = exports.TableTennisController = function() {
-    this.repository = new TableTennisRepository();
+  var PlayerController = exports.PlayerController = function() {
+    this.repository = new PlayerRepository();
   };
   
-  TableTennisController.prototype.save = function(request, response) {
+  PlayerController.prototype.save = function(request, response) {
     if(Util.attrExists(request.body, "identifier") && 
       Util.attrExists(request.body, "name")) {
         
@@ -37,8 +37,9 @@
     }
   };
   
-  TableTennisController.prototype.getAll = function(request, response) {
-    this.repository.getAll(KEY_ALL_PLAYERS, function(players) {
+  PlayerController.prototype.getAll = function(request, response) {
+    this.repository.getAllWithSort(KEY_ALL_SORTED_PLAYERS_BY_NAME_DESC, 
+      {name: 1}, function(players) {
       response.json({"players": players});
     });
   };

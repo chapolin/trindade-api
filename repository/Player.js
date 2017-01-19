@@ -6,13 +6,13 @@
   Redis = require("../libs/RedisCache").RedisCache, redis = new Redis(),
   _ = require("lodash");
   
-  var TableTennisRepository = exports.TableTennisRepository = function() {
+  var PlayerRepository = exports.PlayerRepository = function() {
     this.key = "player";
     this.collecion = "player";
     this.ttl = 604800;
   };
   
-  TableTennisRepository.prototype.insert = function(player, callback) {
+  PlayerRepository.prototype.insert = function(player, callback) {
     var collection = global.mongo.collection(this.getCollection()), self = this;
     
     collection.insert(player, {w:1}, function(error, data) {
@@ -29,7 +29,7 @@
     });
   };
   
-  TableTennisRepository.prototype.checkIfExists = function(identifier, callback) {
+  PlayerRepository.prototype.checkIfExists = function(identifier, callback) {
     var key = this.getKey() + this.getSeparator() + identifier, self = this;
     
     redis.get(key, function(data) {
@@ -59,5 +59,5 @@
     });
   };
   
-  Util.extend(TableTennisRepository, Repository);
+  Util.extend(PlayerRepository, Repository);
 })();

@@ -163,10 +163,39 @@
     });
   };
   
+  Repository.prototype.getAllWithSort = function(value, sort, callback) {
+    var collection = global.mongo.collection(this.getCollection()), 
+    key = `${this.getKey()}${this.getSeparator()}all_${value}`, self = this;
+    
+    redis.get(key, function(data) {
+      if(!data[0] && !data.hasOwnProperty("_id")) {
+        var query = {};
+        
+        collection.find({_id: {$exists: true} }).sort(sort).toArray(function(error, data) {
+          if(error) {
+            console.error("Error getting all data from mongodb. With id: ", id);
+            
+            data = {error: error, origin: "mongodb"};
+          } else if(data && data.length > 0) {
+            // Saving in Redis
+            redis.put(key, data, self.getTtl());
+          } else {
+            data = {_id: -1, origin: "mongodb", msg: "not found"};
+            
+            // Saving not found in Redis
+            redis.put(key, data, TTL_FIVE_MINUTES);
+          }
+          
+          callback(data);
+        });  
+      } else {
+        callback(data);
+      }
+    });
+  };
+  
   Repository.prototype.eraseAll = function(value) {
     var key = `${this.getKey()}${this.getSeparator()}all_${value}`;
-    
-    console.log(key);
     
     // Removing Redis
     redis.remove(key);
