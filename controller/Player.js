@@ -1,31 +1,27 @@
 (function() {
   "use strict";
-  // Put in some constants file
-  const KEY_ALL_PLAYERS = "*", KEY_ALL_SORTED_PLAYERS_BY_NAME_DESC = "*_sorted_name_desc";
   
-  var PlayerRepository = require("../repository/Player").PlayerRepository, 
+  // Put in some constants file
+  const KEY_ALL_SORTED_PLAYERS_BY_NAME_DESC = "*_sorted_name_desc";
+  
+  let PlayerRepository = require("../repository/Player").PlayerRepository, 
       Util = require("../libs/Util").Util,
       Player = require("../models/Player").Player;
   
-  var PlayerController = exports.PlayerController = function() {
+  let PlayerController = exports.PlayerController = function() {
     this.repository = new PlayerRepository();
   };
   
   PlayerController.prototype.save = function(request, response) {
-    if(Util.attrExists(request.body, "identifier") && 
-      Util.attrExists(request.body, "name")) {
-        
-      var identifier = request.body.identifier, 
-          name = request.body.name,
-          stars = request.body.stars,
-          player = new Player(identifier, name, stars), self = this;
-
-      this.repository.checkIfExists(identifier, function(exists) {
-        self.repository.eraseAll(identifier);
-        self.repository.eraseAll(KEY_ALL_PLAYERS);
-        
+    let player = Util.prepareObject(request.body, Player);
+    
+    if(!Util.emptyObject(player) && Util.attrExists(player, "identifier")) {
+      this.repository.checkIfExists(player.identifier, (exists) => {
         if(!exists) {
-          self.repository.insert(player, function(data) {
+          this.repository.eraseAll(player.identifier);
+          this.repository.eraseAll(KEY_ALL_SORTED_PLAYERS_BY_NAME_DESC);
+          
+          this.repository.insert(player, (data) => {
             response.json(data);
           });  
         } else {
@@ -37,9 +33,30 @@
     }
   };
   
+  PlayerController.prototype.change = function(request, response) {
+    let player = Util.prepareObject(request.body, Player);
+    
+    if(!Util.emptyObject(player) && Util.attrExists(player, "identifier")) {
+      this.repository.checkIfExists(player.identifier, (data) => {
+        if(data) {
+          this.repository.update(player, (player) => {
+            this.repository.eraseAll(player.identifier);
+            this.repository.eraseAll(KEY_ALL_SORTED_PLAYERS_BY_NAME_DESC);
+            
+            response.json(data);
+          });
+        } else {
+          response.json({error: "Player not exists!"});
+        }
+      });
+    } else {
+      response.json({error: "Invalid data!"});
+    }
+  };
+  
   PlayerController.prototype.getAll = function(request, response) {
     this.repository.getAllWithSort(KEY_ALL_SORTED_PLAYERS_BY_NAME_DESC, 
-      {name: 1}, function(players) {
+      {name: 1}, (players) => {
       response.json({"players": players});
     });
   };

@@ -1,25 +1,26 @@
 (function() {
   "use strict";
   
-  var Repository = require(
+  let Repository = require(
     "./Repository").Repository, Util = require("../libs/Util").Util,
   Redis = require("../libs/RedisCache").RedisCache, redis = new Redis(),
   _ = require("lodash");
   
-  var PlayerRepository = exports.PlayerRepository = function() {
+  let PlayerRepository = exports.PlayerRepository = function() {
     this.key = "player";
     this.collecion = "player";
     this.ttl = 604800;
   };
   
+  // Overriden
   PlayerRepository.prototype.insert = function(player, callback) {
-    var collection = global.mongo.collection(this.getCollection()), self = this;
+    let collection = global.mongo.collection(this.getCollection());
     
-    collection.insert(player, {w:1}, function(error, data) {
+    collection.insert(player, {w:1}, (error, data) => {
         if(!error) {
-          console.log("%s inserted!", self.getCollection());
+          console.log(`${this.getCollection()} inserted!`);
         
-          var key = self.getKey() + self.getSeparator() + player.identifier;
+          let key = this.getKey() + this.getSeparator() + player.identifier;
           
           // Saving in redis
           redis.put(key, player);
@@ -29,19 +30,45 @@
     });
   };
   
-  PlayerRepository.prototype.checkIfExists = function(identifier, callback) {
-    var key = this.getKey() + this.getSeparator() + identifier, self = this;
+  // Overriden
+  Repository.prototype.update = function(player, callback) {
+    let collection = global.mongo.collection(this.getCollection()), 
+        keyRedis = this.getKey() + this.getSeparator() + player.identifier;
     
-    redis.get(key, function(data) {
-      if(data.hasOwnProperty("_id")) {
-        callback(true);
-      } else {
-        var collection = global.mongo.collection(self.getCollection());
+    this.get(player.identifier, (dataToUpdate) => {
+      if(dataToUpdate) {
+        _.assign(dataToUpdate, player);
+        
+        collection.update({identifier: player.identifier}, { $set: player }, 
+          {w:1}, (error, data) => {
+            if(!error) {
+              console.log(`${this.getCollection()} updated!`);
 
-        collection.find({ identifier: identifier}).toArray(function(error, data) {
-          if(_.get(data)) {
+              // Saving in redis
+              redis.put(keyRedis, dataToUpdate);
+            }
+
+            callback(dataToUpdate);
+        });
+      } else {
+        callback({_id: -1, origin: "repository", msg: "not found"});
+      }
+    });
+  };
+  
+  PlayerRepository.prototype.checkIfExists = function(identifier, callback) {
+    let key = this.getKey() + this.getSeparator() + identifier;
+    
+    redis.get(key, (data) => {
+      if(data.hasOwnProperty("_id")) {
+        callback(data);
+      } else {
+        let collection = global.mongo.collection(this.getCollection());
+
+        collection.find({ identifier: identifier}).toArray((error, data) => {
+          if(!Util.emptyObject(data)) {
             if(data.length > 1) {
-              for(var i = 1; i < data.length; i++) {
+              for(let i = 1; i < data.length; i++) {
                 if(data[i]) {
                   collection.remove({_id: global.mongodb.ObjectID(data[i]._id)});
                 }
@@ -50,9 +77,9 @@
             
             redis.put(key, data[0]);
             
-            callback(true);
+            callback(data[0]);
           } else {
-            callback(false);    
+            callback(false);
           }
         });  
       }

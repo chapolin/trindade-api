@@ -1,19 +1,19 @@
 (function() {
   "use strict";
   
-  var Redis = require("../libs/RedisCache").RedisCache, _ = require("lodash"), 
+  let Redis = require("../libs/RedisCache").RedisCache, _ = require("lodash"), 
       redis = new Redis(), TTL_FIVE_MINUTES = 300;
 
-  var Repository = exports.Repository = function () {};
+  let Repository = exports.Repository = function () {};
   
   Repository.prototype.get = function(id, callback) {
-    var key = this.getKey() + this.getSeparator() + id, self = this;
+    let key = this.getKey() + this.getSeparator() + id, self = this;
     
-    redis.get(key, function(data) {
+    redis.get(key, (data) => {
       if(!data.hasOwnProperty("_id")) {
-        var collection = global.mongo.collection(self.getCollection());
+        let collection = global.mongo.collection(self.getCollection());
 
-        collection.findOne({ _id: global.mongodb.ObjectID(id) }, function(error, data) {
+        collection.findOne({ _id: global.mongodb.ObjectID(id) }, (error, data) => {
           if(error) {
             console.error("Error getting data from mongodb. By key: ", key);
             
@@ -36,13 +36,13 @@
   };
   
   Repository.prototype.insert = function(value, callback) {
-    var collection = global.mongo.collection(this.getCollection()), self = this;
+    let collection = global.mongo.collection(this.getCollection()), self = this;
     
-    collection.insert(value, {w:1}, function(error, data) {
+    collection.insert(value, {w:1}, (error, data) => {
         if(!error) {
           console.log("%s inserted!", self.getKey());
         
-          var key = self.getKey() + self.getSeparator() + data.ops[0]._id;
+          let key = self.getKey() + self.getSeparator() + data.ops[0]._id;
           
           // Saving in redis
           redis.put(key, value);
@@ -53,15 +53,15 @@
   };
   
   Repository.prototype.update = function(key, value, callback) {
-    var collection = global.mongo.collection(this.getCollection()), 
+    let collection = global.mongo.collection(this.getCollection()), 
         keyRedis = this.getKey() + this.getSeparator() + key, self = this;
     
-    this.get(key, function(dataToUpdate) {
+    this.get(key, (dataToUpdate) => {
       if(dataToUpdate) {
         _.assign(dataToUpdate, value);
         
         collection.update({_id: global.mongodb.ObjectID(key)}, 
-          { $set: value }, {w:1}, function(error, data) {
+          { $set: value }, {w:1}, (error, data) => {
             if(!error) {
               console.log("%s updated!", self.getCollection());
 
@@ -78,10 +78,10 @@
   };
   
   Repository.prototype.delete = function(key, callback) {
-    var collection = global.mongo.collection(this.getCollection()), self = this,
+    let collection = global.mongo.collection(this.getCollection()), self = this,
         keyRedis = this.getKey() + this.getSeparator() + key;
     
-    collection.remove({_id: global.mongodb.ObjectID(key)}, function(error, data) {
+    collection.remove({_id: global.mongodb.ObjectID(key)}, (error, data) => {
       if(!error) {
         data = JSON.parse(data) || {};
         
@@ -98,18 +98,18 @@
   };
   
   Repository.prototype.getAllByFieldAndValue = function(field, value, callback) {
-    var collection = global.mongo.collection(this.getCollection()), 
+    let collection = global.mongo.collection(this.getCollection()), 
     key = `${this.getKey()}${this.getSeparator()}all_${value}`, self = this;
     
-    redis.get(key, function(data) {
+    redis.get(key, (data) => {
       if(!data[0] && !data.hasOwnProperty("_id")) {
-        var query = {};
+        let query = {};
         
         if(field && value) {
           query[field] = value;
         }
         
-        collection.find(query).toArray(function(error, data) {
+        collection.find(query).toArray((error, data) => {
           if(error) {
             console.error("Error getting all data from mongodb. With id: ", id);
             
@@ -133,14 +133,14 @@
   };
   
   Repository.prototype.getAll = function(value, callback) {
-    var collection = global.mongo.collection(this.getCollection()), 
+    let collection = global.mongo.collection(this.getCollection()), 
     key = `${this.getKey()}${this.getSeparator()}all_${value}`, self = this;
     
-    redis.get(key, function(data) {
+    redis.get(key, (data) => {
       if(!data[0] && !data.hasOwnProperty("_id")) {
-        var query = {};
+        let query = {};
         
-        collection.find({_id: {$exists: true} }).toArray(function(error, data) {
+        collection.find({_id: {$exists: true} }).toArray((error, data) => {
           if(error) {
             console.error("Error getting all data from mongodb. With id: ", id);
             
@@ -164,14 +164,14 @@
   };
   
   Repository.prototype.getAllWithSort = function(value, sort, callback) {
-    var collection = global.mongo.collection(this.getCollection()), 
+    let collection = global.mongo.collection(this.getCollection()), 
     key = `${this.getKey()}${this.getSeparator()}all_${value}`, self = this;
     
-    redis.get(key, function(data) {
+    redis.get(key, (data) => {
       if(!data[0] && !data.hasOwnProperty("_id")) {
-        var query = {};
+        let query = {};
         
-        collection.find({_id: {$exists: true} }).sort(sort).toArray(function(error, data) {
+        collection.find({_id: {$exists: true} }).sort(sort).toArray((error, data) => {
           if(error) {
             console.error("Error getting all data from mongodb. With id: ", id);
             
@@ -195,7 +195,7 @@
   };
   
   Repository.prototype.eraseAll = function(value) {
-    var key = `${this.getKey()}${this.getSeparator()}all_${value}`;
+    let key = `${this.getKey()}${this.getSeparator()}all_${value}`;
     
     // Removing Redis
     redis.remove(key);
