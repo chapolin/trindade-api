@@ -112,7 +112,9 @@
       arr.sort(Util.sortGameReportByWins);
     }
     
-    return arr;
+    return {
+      "games": arr
+    };
   };
   
   // Sort gameReport by wins
