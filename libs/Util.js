@@ -100,4 +100,26 @@
     
     return empty;
   };
+  
+  Util.prepareForResponse = function(object, typeSort) {
+    let arr = [];
+    
+    for(let index in object) {
+      arr.push(object[index]);
+    }
+    
+    if(typeSort == 1) {
+      arr.sort(Util.sortGameReportByWins);
+    }
+    
+    return arr;
+  };
+  
+  // Sort gameReport by wins
+  Util.sortGameReportByWins = function(a, b) {
+    var x = a.wins;
+    var y = b.wins;
+
+    return x < y ? 1 : x > y ? -1 : 0;
+  };
 })();

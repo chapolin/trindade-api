@@ -3,7 +3,7 @@
   
   // Put in some constants file
   const KEY_ALL_GAMES = "*", KEY_ALL_GROUPED_GAMES = "*_grouped",
-  KEY_ALL_SORTED_GAMES_BY_DATE_DESC = "*_sorted_date_desc";
+  KEY_ALL_SORTED_GAMES_BY_DATE_DESC = "*_sorted_date_desc", SORT_BY_WINS = 1;
   
   let GameRepository = require("../repository/Game").GameRepository, 
       Util = require("../libs/Util").Util,
@@ -66,13 +66,13 @@
             games[index].loserId, games[index].loser);
         }
         
-        gameReportList[games[index].winnerId].wins++;
-        gameReportList[games[index].winnerId].games++;
-        gameReportList[games[index].loserId].defeats++;
-        gameReportList[games[index].loserId].games++;
+        gameReportList[ games[index].winnerId ].wins++;
+        gameReportList[ games[index].winnerId ].games++;
+        gameReportList[ games[index].loserId ].defeats++;
+        gameReportList[ games[index].loserId ].games++;
       }
       
-      response.json(gameReportList);
+      response.json(Util.prepareForResponse(gameReportList, SORT_BY_WINS));
     });
   };
 })();
