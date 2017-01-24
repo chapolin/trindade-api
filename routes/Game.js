@@ -22,5 +22,9 @@
     app.get('/games/grouped', (request, response) => {
       controller.getGroupedData(request, response);
     });
+    
+    app.get('/games/grouped/average', (request, response) => {
+      controller.getGroupedAverageData(request, response);
+    });
   };
 })();

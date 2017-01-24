@@ -110,6 +110,8 @@
     
     if(typeSort == 1) {
       arr.sort(Util.sortGameReportByWins);
+    } else if(typeSort == 2) {
+      arr.sort(Util.sortGameReportByAverage);
     }
     
     return {
@@ -122,6 +124,14 @@
     var x = a.wins;
     var y = b.wins;
 
+    return x < y ? 1 : x > y ? -1 : 0;
+  };
+  
+  // Sort gameReport by average
+  Util.sortGameReportByAverage = function(a, b) {
+    var x = a.average;
+    var y = b.average;
+    
     return x < y ? 1 : x > y ? -1 : 0;
   };
 })();
