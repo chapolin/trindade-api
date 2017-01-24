@@ -25,6 +25,7 @@
       this.repository.insert(game, (data) => {
         this.repository.eraseAll(KEY_ALL_GAMES);
         this.repository.eraseAll(KEY_ALL_SORTED_GAMES_BY_DATE_DESC);
+        this.repository.eraseAll(KEY_ALL_GROUPED_GAMES);
         
         response.json(data);
       });
