@@ -171,7 +171,7 @@
       if(!data[0] && !data.hasOwnProperty("_id")) {
         let query = {};
         
-        collection.find({_id: {$exists: true} }).sort(sort).toArray((error, data) => {
+        collection.find().sort(sort).toArray((error, data) => {
           if(error) {
             console.error("Error getting all data from mongodb. With id: ", id);
             
