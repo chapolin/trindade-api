@@ -173,7 +173,7 @@
         
         collection.find().sort(sort).toArray((error, data) => {
           if(error) {
-            console.error("Error getting all data from mongodb. With id: ", id);
+            console.error("Error getting all data from mongodb.");
             
             data = {error: error, origin: "mongodb"};
           } else if(data && data.length > 0) {

@@ -44,7 +44,7 @@
   
   GameController.prototype.getLastGames = function(request, response) {
     this.repository.getAllWithSort(
-      KEY_ALL_SORTED_GAMES_BY_DATE_DESC, {date: -1}, (games) => {
+      KEY_ALL_SORTED_GAMES_BY_DATE_DESC, {'date': -1, }, (games) => {
       response.json({
         "total": games.length,
         "games": games
