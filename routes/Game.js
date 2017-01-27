@@ -20,11 +20,16 @@
     });
     
     app.get('/games/grouped', (request, response) => {
-      controller.getGroupedData(request, response);
+      controller.getGrouped(request, response);
     });
     
     app.get('/games/grouped/average', (request, response) => {
-      controller.getGroupedAverageData(request, response);
+      controller.getGroupedAverage(request, response);
+    });
+    
+    app.get('/games/grouped/average/last/:numberOfGames', (request, response) => {
+      controller.getGroupedAverageLastGames(request, response, 
+        request.params.numberOfGames);
     });
   };
 })();
