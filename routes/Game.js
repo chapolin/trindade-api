@@ -31,5 +31,9 @@
       controller.getGroupedAverageLastGames(request, response, 
         request.params.numberOfGames);
     });
+    
+    app.get('/games/migration', (request, response) => {
+      controller.migrationDate(request, response);
+    });
   };
 })();

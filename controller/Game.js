@@ -14,13 +14,40 @@
     this.repository = new GameRepository();
   };
   
+  GameController.prototype.migrationDate = function(request, response) {
+    this.repository.getAll(KEY_ALL_GAMES, (games) => {
+      let index = 0, arrMigrated = [];
+      
+      let loopSave = () => {
+        let date = new Date(games[index].date);
+        
+        this.repository.update(games[index]._id, {date: date}, () => {
+          arrMigrated.push({
+            oldDate: games[index].date,
+            newDate: date
+          });
+          
+          if(games[index + 1]) {
+            index++;
+            
+            loopSave();
+          } else {
+            response.json(arrMigrated);
+          }
+        });  
+      };
+      
+      loopSave();
+    });
+  };
+  
   GameController.prototype.save = function(request, response) {
     let game = Util.prepareObject(request.body, Game);
     
     if(!Util.emptyObject(game) && Util.attrExists(game, "winner") && 
       Util.attrExists(game, "loser")) {
         
-      game.date = Util.now(true);
+      game.date = Util.now();
       
       this.repository.insert(game, (data) => {
         this.repository.eraseAll(KEY_ALL_GAMES);
