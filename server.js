@@ -10,12 +10,12 @@
 	Redis = require("./libs/RedisCache").RedisCache,
 	routesPath = path.join(__dirname, "routes"), 
 	develop = process.env.DEVELOP === "true", 
-	STRING_CONNECTION = "mongodb://trindade:trindad3@ds159978.mlab.com:59978/heroku_kdgk2x7s",
+	STRING_CONNECTION = "mongodb://localhost/trindade",
 	redisProperties = null;
 
-	if(develop) {
-		STRING_CONNECTION = "mongodb://localhost/trindade";
-	}
+	// if(develop) {
+	// 	STRING_CONNECTION = "mongodb://localhost/trindade";
+	// }
 
 	// Connect to the DB
 	MongoClient.connect(STRING_CONNECTION, (err, db) => {
