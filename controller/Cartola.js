@@ -22,8 +22,6 @@
       this.repository.insert(cartola, (data) => {
         this.repository.eraseAll("*");
 
-        console.log(data[0]);
-
         response.json(data[0]);
       });
     } else {
@@ -33,7 +31,7 @@
 
   CartolaController.prototype.getAll = function(request, response) {
     this.repository.getAllWithSort("*", {"data": -1, }, (data) => {
-      response.json(data);
+      response.json(data[0]);
     });
   };
 })();
