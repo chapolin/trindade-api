@@ -1,7 +1,7 @@
 {
-  "name": "movies-services",
+  "name": "trindade-api",
   "version": "1.0.0",
-  "description": "Movies Services",
+  "description": "Trindade API",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
@@ -18,11 +18,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/chapolin/movies-services.git"
+    "url": "https://github.com/chapolin/trindade-api.git"
   },
   "keywords": [
-    "services",
-    "movies"
+    "trindade",
+    "api"
   ],
   "license": "MIT"
 }
