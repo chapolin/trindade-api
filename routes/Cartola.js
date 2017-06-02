@@ -16,5 +16,11 @@
       controller.getAll(request, response);
     });
     // Crud data: end
+
+    // Crud Create key: start
+    app.post('/cartola/createkey', (request, response) => {
+      controller.createKey(request, response);
+    });
+    // Crud Create key: end
   };
 })();
