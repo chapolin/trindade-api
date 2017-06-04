@@ -7,7 +7,7 @@
   module.exports = function (app) {
     // Crud data insert: start
     app.post('/cartola/save', (request, response) => {
-      controller.saveData(request, response);
+      controller.save(request, response);
     });
     // Crud data insert: end
     

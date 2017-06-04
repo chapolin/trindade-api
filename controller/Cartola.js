@@ -11,7 +11,7 @@
     this.repository = new CartolaRepository();
   };
 
-  CartolaController.prototype.saveData = function(request, response) {
+  CartolaController.prototype.save = function(request, response) {
     let cartola = Util.prepareObject(request.body, Cartola);
 
     if(!Util.emptyObject(cartola)) {
@@ -36,19 +36,23 @@
   }
 
   CartolaController.prototype.get = function(request, response) {
-    let key = this.repository.getKey() + this.repository.getSeparator() + request.query.key;
+    if(!request.query.key) {
+      response.json(null);
+    } else {
+     let key = this.repository.getKey() + this.repository.getSeparator() + request.query.key;
 
-    redis.get(key, (data) => {
-      if(!Util.emptyObject(data)) {
-        response.json(data);
-      } else {
-        this.repository.getWithQuery({ key: request.query.key }, (data) => {
-          redis.put(key, data);
-
+      redis.get(key, (data) => {
+        if(!Util.emptyObject(data)) {
           response.json(data);
-        });
-      }
-    });
+        } else {
+          this.repository.getWithQuery({ key: request.query.key }, (data) => {
+            redis.put(key, data);
+
+            response.json(data);
+          });
+        }
+      }); 
+    }
   };
 
   CartolaController.prototype.createKey = function(request, response) {
