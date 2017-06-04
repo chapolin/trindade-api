@@ -1,10 +1,6 @@
 (function() {
   "use strict";
   
-  // Put in some constants file
-  const KEY_ALL_GAMES = "*", SORT_BY_WINS = 1, SORT_BY_AVERAGE = 2,
-    KEY_ALL_SORTED_GAMES_BY_DATE_DESC = "*_sorted_date_desc";
-  
   let CartolaRepository = require("../repository/Cartola").CartolaRepository, 
       Util = require("../libs/Util").Util,
       Cartola = require("../models/Cartola").Cartola,
@@ -15,7 +11,7 @@
     this.repository = new CartolaRepository();
   };
 
-  CartolaController.prototype.save = function(request, response) {
+  CartolaController.prototype.saveData = function(request, response) {
     let cartola = Util.prepareObject(request.body, Cartola);
 
     if(!Util.emptyObject(cartola)) {
