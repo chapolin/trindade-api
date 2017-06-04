@@ -13,7 +13,7 @@
     
     // Crud data: start
     app.get('/cartola/data', (request, response) => {
-      controller.getAll(request, response);
+      controller.get(request, response);
     });
     // Crud data: end
 

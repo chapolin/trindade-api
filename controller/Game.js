@@ -141,9 +141,6 @@
         wins = gamesSummarized[index].wins,
         defeats = gamesSummarized[index].defeats;
         
-        
-        // console.log(index, games);
-        
         let average = (wins * 100) / games;
         
         if(average.toString().indexOf(".") != -1) {

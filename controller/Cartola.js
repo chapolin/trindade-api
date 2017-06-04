@@ -7,31 +7,51 @@
   
   let CartolaRepository = require("../repository/Cartola").CartolaRepository, 
       Util = require("../libs/Util").Util,
-      Cartola = require("../models/Cartola").Cartola;
+      Cartola = require("../models/Cartola").Cartola,
+      Redis = require("../libs/RedisCache").RedisCache,
+      redis = new Redis();
       
   let CartolaController = exports.CartolaController = function() {
     this.repository = new CartolaRepository();
   };
-  
+
   CartolaController.prototype.save = function(request, response) {
     let cartola = Util.prepareObject(request.body, Cartola);
 
     if(!Util.emptyObject(cartola)) {
       cartola.data = new Date();
 
-      this.repository.insert(cartola, (data) => {
-        this.repository.eraseAll("*");
+      this.repository.getWithQuery({ key: request.body.key }, (data) => {
+        let key = this.repository.getKey() + this.repository.getSeparator() + cartola.key;
 
-        response.json(data[0]);
+        redis.remove(key);
+
+        if(!data) {
+          this.repository.insert(cartola, (data) => {
+            response.json({"ok": true});
+          });
+        } else {
+          this.repository.update(data._id, cartola, (data) => {
+            response.json({"ok": true});
+          });
+        }
       });
-    } else {
-      response.json({error: "Invalid data!"});
     }
-  };
+  }
 
-  CartolaController.prototype.getAll = function(request, response) {
-    this.repository.getAllWithSort("*", {"data": -1, }, (data) => {
-      response.json(data[0]);
+  CartolaController.prototype.get = function(request, response) {
+    let key = this.repository.getKey() + this.repository.getSeparator() + request.query.key;
+
+    redis.get(key, (data) => {
+      if(!Util.emptyObject(data)) {
+        response.json(data);
+      } else {
+        this.repository.getWithQuery({ key: request.query.key }, (data) => {
+          redis.put(key, data);
+
+          response.json(data);
+        });
+      }
     });
   };
 
