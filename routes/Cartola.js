@@ -2,7 +2,9 @@
   "use strict";
   
   let CartolaController = require("../controller/Cartola").CartolaController,
-    controller = new CartolaController();
+      CartolaAdminController = require("../controller/CartolaAdmin").CartolaAdminController,
+    controller = new CartolaController(),
+    controllerAdmin = new CartolaAdminController();
   
   module.exports = function (app) {
     // Crud data insert: start
@@ -19,7 +21,7 @@
 
     // Crud Create key: start
     app.post('/cartola/createkey', (request, response) => {
-      controller.createKey(request, response);
+      controllerAdmin.createKey(request, response);
     });
     // Crud Create key: end
   };

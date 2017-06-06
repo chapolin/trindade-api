@@ -3,9 +3,7 @@
   
   let CartolaRepository = require("../repository/Cartola").CartolaRepository, 
       Util = require("../libs/Util").Util,
-      Cartola = require("../models/Cartola").Cartola,
-      Redis = require("../libs/RedisCache").RedisCache,
-      redis = new Redis();
+      Cartola = require("../models/Cartola").Cartola;
       
   let CartolaController = exports.CartolaController = function() {
     this.repository = new CartolaRepository();
@@ -18,10 +16,6 @@
       cartola.data = new Date();
 
       this.repository.getWithQuery({ key: request.body.key }, (data) => {
-        let key = this.repository.getKey() + this.repository.getSeparator() + cartola.key;
-
-        redis.remove(key);
-
         if(!data) {
           this.repository.insert(cartola, (data) => {
             response.json({"ok": true});
@@ -54,26 +48,4 @@
       }); 
     }
   };
-
-  CartolaController.prototype.createKey = function(request, response) {
-    let {id, email} = request.body;
-
-    if(!id && email) {
-      this.repository.getAllByFieldAndValue("email", email, (data) => {
-        if(!data[0]) {
-          this.repository.insert({email: email}, (data) => {
-            this.repository.eraseAll(email);
-            response.json(data.ops[0]);
-          });
-        } else {
-          response.json(data[0]);
-        }
-      });
-    } else {
-      response.json({
-        "_id": id,
-        "email": email
-      });
-    }
-  }
 })();
