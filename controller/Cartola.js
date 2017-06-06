@@ -44,7 +44,9 @@
           response.json(data);
         } else {
           this.repository.getWithQuery({ key: request.query.key }, (data) => {
-            redis.put(key, data);
+            if(data) {
+              redis.put(key, data);
+            }
 
             response.json(data);
           });
