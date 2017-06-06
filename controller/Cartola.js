@@ -19,17 +19,23 @@
     if(!Util.emptyObject(cartola)) {
       cartola.data = new Date();
 
-      this.repository.getWithQuery({ key: request.body.key }, (data) => {
+      let cacheKey = this.repository.getKey() + this.repository.getSeparator() + cartola.key;
+
+      this.repository.getWithQuery({ key: cartola.key }, (data) => {
         if(!data) {
           this.repository.insert(cartola, (data) => {
+            redis.put(cacheKey, cartola);
             response.json({"ok": true});
           });
         } else {
           this.repository.update(data._id, cartola, (data) => {
+            redis.put(cacheKey, cartola);
             response.json({"ok": true});
           });
         }
       });
+    } else {
+      response.json(null);
     }
   }
 
@@ -37,7 +43,7 @@
     if(!request.query.key) {
       response.json(null);
     } else {
-     let key = this.repository.getKey() + this.repository.getSeparator() + request.query.key;
+      let key = this.repository.getKey() + this.repository.getSeparator() + request.query.key;
 
       redis.get(key, (data) => {
         if(!Util.emptyObject(data)) {
