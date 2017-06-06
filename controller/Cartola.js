@@ -3,7 +3,11 @@
   
   let CartolaRepository = require("../repository/Cartola").CartolaRepository, 
       Util = require("../libs/Util").Util,
+      Redis = require("../libs/RedisCache").RedisCache,
+      redis = new Redis(),
       Cartola = require("../models/Cartola").Cartola;
+
+
       
   let CartolaController = exports.CartolaController = function() {
     this.repository = new CartolaRepository();
